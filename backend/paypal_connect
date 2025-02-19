@@ -1,0 +1,7 @@
+import socket
+
+try:
+    socket.create_connection(("api-m.sandbox.paypal.com", 443), timeout=5)
+    print("Connection successful")
+except socket.error as e:
+    print(f"Connection failed: {e}")

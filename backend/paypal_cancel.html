@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PayPal Payment Cancelled</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .cancel-icon {
+            color: red;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #0070ba;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #005ea6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="cancel-icon">✗</div>
+        <h1>Payment Cancelled</h1>
+        <p>Your payment has been cancelled.</p>
+        <p>If this was unintentional, please try again.</p>
+        <p>Order ID: <span id="order-id">N/A</span></p>
+        <a href="your-checkout-page-url" class="btn">Try Again</a>
+        <a href="javascript:window.close()" class="btn" style="background-color: grey;">Close Window</a>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('orderId');
+
+        if (orderId) {
+            document.getElementById('order-id').textContent = orderId;
+            
+            // Log cancellation on your backend
+            fetch(`https://your-ngrok-url/api/paypal/cancel-order/${orderId}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Cancellation Logged:', data);
+            })
+            .catch(error => {
+                console.error('Error logging cancellation:', error);
+            });
+        }
+    </script>
+</body>
+</html>

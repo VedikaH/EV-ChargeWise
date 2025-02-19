@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PayPal Payment Successful</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .success-icon {
+            color: green;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon">✓</div>
+        <h1>Payment Successful</h1>
+        <p>Your payment has been processed successfully.</p>
+        <p>Order details will be verified and processed shortly.</p>
+        <a href="javascript:window.close()">Close Window</a>
+    </div>
+
+    <script>
+        // Optional: Extract and log order details from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('orderId');
+        const payerId = urlParams.get('PayerID');
+        
+        if (orderId) {
+            console.log('Order ID:', orderId);
+            
+            // Optional: You could add a fetch to your backend to verify the order
+            fetch(`/api/paypal/verify-order/${orderId}`, {
+                method: 'GET'
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Order Verification Result:', data);
+            })
+            .catch(error => {
+                console.error('Error verifying order:', error);
+            });
+        }
+    </script>
+</body>
+</html>

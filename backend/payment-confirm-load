@@ -1,0 +1,9 @@
+FOR CARD:
+{
+        "card": {
+            "name": "John Doe",
+            "number": "4111111111111111", 
+            "expiry": "2026-12",
+            "security_code": "123"
+        }
+    }
