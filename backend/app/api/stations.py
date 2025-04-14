@@ -6,13 +6,16 @@ from app.database.session import get_db
 from app.models.stations import Station
 from app.schemas.stations import StationCreate, StationResponse, StationSearchRequest
 from app.services.route import RouteOptimizer
+from app.models.admin import Admin
+from app.auth.dependencies import get_current_admin, get_current_user, require_super_admin
 
 router = APIRouter()
 
 @router.post("/search", response_model=List[StationResponse])
 def search_stations(
     search_params: StationSearchRequest, 
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)  
 ):
     """
     Search for nearby charging stations using Dijkstra-based route optimization
@@ -64,14 +67,19 @@ def search_stations(
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@router.post("/", response_model=StationResponse)
+@router.post("/super-admin/create-station", response_model=StationResponse)
 def create_station(
     station: StationCreate, 
+    current_admin: Admin = Depends(require_super_admin),
     db: Session = Depends(get_db)
 ):
-    """
-    Create a new charging station
-    """
+    """Create a new charging station (admin only)"""
+    if not current_admin.is_super_admin:
+        raise HTTPException(
+            status_code=403,
+            detail="Only super admins can create new stations"
+        )
+    
     db_station = Station(
         name=station.name,
         latitude=station.latitude,
@@ -83,6 +91,8 @@ def create_station(
     
     try:
         db.add(db_station)
+        # Add the station to the creating admin's managed stations
+        current_admin.stations.append(db_station)
         db.commit()
         db.refresh(db_station)
         

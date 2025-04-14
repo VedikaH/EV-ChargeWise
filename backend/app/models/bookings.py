@@ -2,8 +2,6 @@ from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from app.database.base import Base
 
-
-
 class Booking(Base):
     __tablename__ = "bookings"
     
@@ -17,3 +15,5 @@ class Booking(Base):
     
     user = relationship("User", back_populates="bookings")
     station = relationship("Station", back_populates="bookings")
+    payment = relationship("Payment", back_populates="booking", uselist=False)
+

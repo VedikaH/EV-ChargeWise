@@ -16,6 +16,10 @@ class Settings(BaseSettings):
     PAYPAL_RETURN_URL: str
     PAYPAL_CANCEL_URL: str
     MAX_SEARCH_RADIUS: float = 20.0  # kilometers
+    SECRET_KEY:str 
+    ALGORITHM: str 
+    ACCESS_TOKEN_EXPIRE_MINUTES:int
+
 
     class Config:
         env_file = ".env"

@@ -77,8 +77,15 @@ def optimize_route(
             
             else:
                 # Middle stations - use distance from station_to_station segment
-                segment_index = i + 1  # Account for initial start_to_station segment
-                station_response.distance_to_next = segments[segment_index]['distance']
+                # segment_index = i + 1  # Account for initial start_to_station segment
+                # station_response.distance_to_next = segments[segment_index]['distance']
+                segment_index = i  # Since segment[0] is start_to_station
+                station_response.distance_from_previous = segments[segment_index]['distance']
+                
+                # Assign distance to next station
+                if segment_index + 1 < len(segments):
+                    station_response.distance_to_next = segments[segment_index + 1]['distance']
+            
             
             station_responses.append(station_response)
 

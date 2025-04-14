@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, String, Float, Boolean
 from sqlalchemy.orm import relationship
 from app.database.base import Base
 from app.models.bookings import Booking  # Import the Booking model
-from app.models.user import User  # Import the Booking model
+from app.models.admin import admin_stations  # Import the Booking model
 
 class Station(Base):
     __tablename__ = "stations"
@@ -12,14 +12,11 @@ class Station(Base):
     name = Column(String, index=True)
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
-    
-    charging_type = Column(String)  # AC, DC, Fast Charging
-    power_output = Column(Float)  # in kW
+    charging_type = Column(String)
+    power_output = Column(Float)
     is_available = Column(Boolean, default=True)
+    is_maintenance = Column(Boolean, default=False)
     
-    # Relationships
+    # Add relationship with admins
+    admins = relationship("Admin", secondary=admin_stations, back_populates="stations")
     bookings = relationship("Booking", back_populates="station")
-    
-    def is_within_radius(self, lat, lon, radius):
-        from app.utils.distance_calculator import haversine_distance
-        return haversine_distance(self.latitude, self.longitude, lat, lon) <= radius

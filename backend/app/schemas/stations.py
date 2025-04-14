@@ -23,7 +23,9 @@ class StationResponse(BaseModel):
     distance: Optional[float] = None
     distance_to_next: Optional[float] = None
     distance_from_start: Optional[float] = None,
-    distance_to_destination: Optional[float] = None
+    distance_to_destination: Optional[float] = None,
+    admin_ids: Optional[List[int]] = None  # Added to show managing admins
+
 
 class StationSearchRequest(BaseModel):
     latitude: float

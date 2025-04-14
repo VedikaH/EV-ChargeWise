@@ -1,13 +1,17 @@
+from typing import Optional
 from sqlalchemy.orm import Session
 from datetime import datetime
 from app.models.bookings import Booking
 from app.models.stations import Station
 from app.schemas.bookings import BookingCreate
+from app.models.admin import Admin
 
 
 class BookingService:
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, current_admin: Optional[Admin] = None):
         self.db = db
+        self.current_admin = current_admin
+
 
     def check_station_availability(self, station_id: int, start_time: datetime, end_time: datetime) -> bool:
         """
@@ -27,16 +31,13 @@ class BookingService:
         return len(conflicting_bookings) == 0
 
     def create_booking(self, booking_data: BookingCreate) -> Booking:
-        """
-        Create a new booking for a charging station
-        
-        :param booking_data: Booking creation details
-        :return: Created booking
-        """
         # Validate station exists and is available
         station = self.db.query(Station).filter(Station.id == booking_data.station_id).first()
         if not station:
             raise ValueError("Station not found")
+        
+        # Validate admin access if applicable
+        self.validate_admin_access(booking_data.station_id)
         
         # Check station availability for the time slot
         if not self.check_station_availability(
