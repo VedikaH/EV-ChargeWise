@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     SECRET_KEY:str 
     ALGORITHM: str 
     ACCESS_TOKEN_EXPIRE_MINUTES:int
+    OSRM_SERVER_URL: str = "http://router.project-osrm.org"
+    MAX_SEARCH_RADIUS: float = 20  # in kilometers
 
 
     class Config:

@@ -1,1 +1,4 @@
 backend/.env
+backend/ev_final.xlsx
+hashpassword.py
+backend/seeder.py

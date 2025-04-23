@@ -64,7 +64,7 @@ from app.auth.dependencies import (
 # Create database tables
 base.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title=settings.PROJECT_NAME)
+app = FastAPI(title=settings.PROJECT_NAME,debug=True)
 
 # CORS middleware
 app.add_middleware(
@@ -125,8 +125,9 @@ def health_check():
     return {"status": "healthy"}
 
 def authenticate_user(db: Session, username: str, password: str):
-    print("🔍 Looking up user:", username)
+    print("🔍 Looking up user or admin:", username)
 
+    # First, check if it's an admin
     admin = db.query(Admin).filter(Admin.username == username).first()
     if admin:
         print("👤 Found admin:", admin.username)
@@ -135,8 +136,20 @@ def authenticate_user(db: Session, username: str, password: str):
             return admin
         else:
             print("❌ Admin password mismatch")
-    
-    print("❌ No matching user or admin")
+            return None
+
+    # If not an admin, try checking the user table
+    user = db.query(User).filter(User.username == username).first()
+    if user:
+        print("👤 Found user:", user.username)
+        if verify_password(password, user.hashed_password):
+            print("🔐 Password match for user")
+            return user
+        else:
+            print("❌ User password mismatch")
+            return None
+
+    print("❓ No admin or user found with that username")
     return None
 
 @app.post("/token", response_model=Token)

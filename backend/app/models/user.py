@@ -13,7 +13,5 @@ class User(Base):
     phone_number = Column(String, unique=True, index=True)
     created_at = Column(DateTime, default=datetime)
     is_active = Column(Boolean, default=True)
-    last_login = Column(DateTime, nullable=True)
-
 
     bookings = relationship("Booking", back_populates="user")
