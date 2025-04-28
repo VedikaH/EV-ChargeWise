@@ -41,9 +41,9 @@ def get_password_hash(password: str) -> str:
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.now(IST) + expires_delta
+        expire = datetime.now(pytz.utc) + expires_delta
     else:
-        expire = datetime.now(IST) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now(pytz.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
@@ -79,7 +79,7 @@ async def get_current_user(
         raise credentials_exception
         
     # Update last login
-    user.last_login = datetime.now(IST)
+    user.last_login = datetime.now(pytz.utc)
     db.commit()
     
     return user

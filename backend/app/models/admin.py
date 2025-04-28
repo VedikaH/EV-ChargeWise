@@ -34,6 +34,6 @@ class AdminActivityLog(Base):
     admin_id = Column(Integer, ForeignKey("admins.id"))
     action = Column(String)  # e.g., "station_assigned", "booking_approved"
     details = Column(String)
-    timestamp = Column(DateTime, default=datetime)
+    timestamp = Column(DateTime, default=datetime.utcnow)
     
     admin = relationship("Admin", back_populates="activity_logs")

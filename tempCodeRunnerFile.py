@@ -1,1 +1,0 @@
-charging_type
